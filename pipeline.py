@@ -72,9 +72,9 @@ if not WGET_AT:
 #
 # Update this each time you make a non-cosmetic change.
 # It will be added to the WARC files and reported to the tracker.
-VERSION = '20260915.02'
-TRACKER_ID = 'sinavideo'
-TRACKER_HOST = 'legacy-api.arpa.li'
+VERSION = '20260915.01'
+TRACKER_ID = 'zapytaj'
+TRACKER_HOST = 'localhost'
 MULTI_ITEM_SIZE = 1 # KEEP ONE
 with open('user-agents.txt', 'r') as f:
     USER_AGENTS = [l.strip() for l in f]
@@ -292,7 +292,7 @@ def get_hash(filename):
 
 CWD = os.getcwd()
 PIPELINE_SHA1 = get_hash(os.path.join(CWD, 'pipeline.py'))
-LUA_SHA1 = get_hash(os.path.join(CWD, 'sinavideo.lua'))
+LUA_SHA1 = get_hash(os.path.join(CWD, 'zapytaj.lua'))
 
 
 def stats_id_function(item):
@@ -323,7 +323,7 @@ class WgetArgs(object):
             '--reject-reserved-subnets',
             #'--prefer-family', ('IPv4' if 'PREFER_IPV4' in os.environ else 'IPv6'),
             '--content-on-error',
-            '--lua-script', 'sinavideo.lua',
+            '--lua-script', 'zapytaj.lua',
             '-o', ItemInterpolation('%(item_dir)s/wget.log'),
             '--output-document', ItemInterpolation('%(item_dir)s/wget.tmp'),
             '--truncate-output',
@@ -335,22 +335,9 @@ class WgetArgs(object):
             '--connect-timeout', '10',
             '--tries', 'inf',
             '--domains', ','.join([
-                'iask.com',
-                'sina.cn',
-                'sina.com',
-                'sina.com.cn',
-                'sina.net',
-                'sina.net.cn',
-                'sinaapp.com',
-                'sinacloud.net',
-                'sincloud.net',
-                'sinaedge.com',
-                'sinaimg.cn',
-                'sinajs.cn',
-                'weibo.cn',
-                'weibo.com',
-                'weibo.com.cn',
-                'weibocdn.com',
+                'zapytaj.onet.pl',
+                'ocdn.eu',
+                'adres.pl'
             ]),
             '--span-hosts',
             '--waitretry', '30',
@@ -376,15 +363,21 @@ class WgetArgs(object):
             wget_args.extend(['--warc-header', 'x-wget-at-project-item-name: '+item_name])
             wget_args.append('item-name://'+item_name)
             item_type, item_value = item_name.split(':', 1)
-            if item_type == 'video':
-                wget_args.extend(['--warc-header', 'sinavideo-video: '+item_value])
-                wget_args.append('https://api.ivideo.sina.com.cn/public/video/info?video_id={}&appname=sinaplayer_pc&appver=V11220.210521.03&applt=web&tags=sinaplayer_pc'.format(item_value))
+            if item_type == 'question':
+                wget_args.extend(['--warc-header', 'zapytaj-question: '+item_value])
+                wget_args.append('https://zapytaj.onet.pl/Category/{}.html'.format(item_value))
             elif item_type == 'vid':
-                wget_args.extend(['--warc-header', 'sinavideo-vid: '+item_value])
-                wget_args.append('https://s.video.sina.com.cn/video/getvideoidbyvid?vid={}'.format(item_value))
-            elif item_type == 'file':
-                wget_args.extend(['--warc-header', 'sinavideo-file: '+item_value])
-                wget_args.append('https://s3.ivideo.sina.com.cn/{}.flv'.format(item_value))
+                wget_args.extend(['--warc-header', 'zapytaj-user: '+item_value])
+                wget_args.append('https://zapytaj.onet.pl/Profile/user_{}.html'.format(item_value))
+            elif item_type == 'club':
+                wget_args.extend(['--warc-header', 'zapytaj-club: '+item_value])
+                wget_args.append('https://zapytaj.onet.pl/klub/{}'.format(item_value))
+            elif item_type == 'image':
+                wget_args.extend(['--warc-header', 'zapytaj-image: '+item_value])
+                wget_args.append(item_value)
+            elif item_type == 'image-redirect':
+                wget_args.extend(['--warc-header', 'zapytaj-image-redirect: '+item_value])
+                wget_args.append('https://zapytaj.onet.pl/image/generate.html?url={}'.format(item_value))
             else:
                 raise Exception('Unknown item')
 
@@ -408,9 +401,9 @@ class WgetArgs(object):
 project = Project(
     title=TRACKER_ID,
     project_html='''
-        <img class="project-logo" alt="Project logo" src="https://wiki.archiveteam.org/images/thumb/9/9e/Sina-icon.png/783px-Sina-icon.png" height="50px" title=""/>
-        <h2>Sina Video <span class="links"><a href="https://video.sina.com.cn/">Website</a> &middot; <a href="https://tracker.archiveteam.org/sinavideo/">Leaderboard</a> &middot; <a href="https://wiki.archiveteam.org/index.php/Sina_Video">Wiki</a></span></h2>
-        <p>Archiving historical Sina Video data.</p>
+        <img class="project-logo" alt="Project logo" src="placeholder.png" height="50px" title=""/>
+        <h2>Zapytaj Onet <span class="links"><a href="https://zapytaj.onet.pl/">Website</a> &middot; <a href="https://tracker.archiveteam.org/zapytajonet/">Leaderboard</a> &middot; <a href="https://wiki.archiveteam.org/index.php/Zapytaj_Onet">Wiki</a></span></h2>
+        <p>Archiving historical Zapytaj Onet data.</p>
     ''',
     utc_deadline=datetime.datetime(2026, 9, 16, 16, 0, 0)
 )

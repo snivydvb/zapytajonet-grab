@@ -1,6 +1,17 @@
-# sinavideo-grab
+# unfinished, for testing and experimenting only!
 
-More information about the archiving project can be found on the ArchiveTeam wiki: [Sina Video](https://wiki.archiveteam.org/index.php?title=Sina Video)
+## TODO
+* test more and test with an actual tracker
+* look into clubs more
+* verify if r.adres.pl urls exist for blocked users and if it should be fetched
+* what should be done on a 429 [rate-limited] error? some previous tests have shown that waiting for a few minutes gets rid of it, should the script just sleep for x minutes or should the task get dropped and passed over?
+* should jobs for user pages that are heavily paginated [over 100 pages] be split and assigned different ids?
+* question listings
+
+
+# zapytajonet-grab
+
+More information about the archiving project can be found on the ArchiveTeam wiki: [Zapytaj Onet](https://wiki.archiveteam.org/index.php?title=Zapytaj Onet)
 
 ## Donations
 
